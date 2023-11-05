@@ -133,3 +133,26 @@ class LL1Parser:
             func = lambda x: list(map(self.str_to_symb, x))
             ternimalized.append((func(rule[0]), rule[1], func(rule[2])))
         return ternimalized
+
+
+def parse_grammar(grammar, string_to_parse):
+    first_follow = FirstFollow(grammar)
+    first_k = first_follow.first_k(1)
+    follow_k = first_follow.follow_k(1, first_k)
+    parser = ParsingTableBuilder(grammar, first_k, follow_k)
+    table = parser.build()
+    print("Parser control table:")
+    print(table)
+    print("Analyzer process:")
+    applied_rules = None
+    try:
+        analyzer = LL1Parser(table, NonTerminal('S'), grammar)
+        str_to_parse = '(a+a)*a'
+        applied_rules = analyzer.parse(list(map(lambda x: Terminal(x), str_to_parse)))
+    except SyntaxError as se:
+        print(f"Got an error: {str(se)}")
+    except ValueError as ve:
+        print(f"Got an error: {str(ve)}")
+    except:
+        print("Got an error")
+    return applied_rules

@@ -2,7 +2,7 @@ from grammar.grammar import Grammar
 from grammar.firstfollow import FirstFollow
 from grammar.non_terminal import NonTerminal
 from grammar.terminal import Terminal
-from grammar.parser import ParsingTableBuilder, LL1Parser
+from grammar.parser import ParsingTableBuilder, LL1Parser, parse_grammar
 
 
 
@@ -36,16 +36,18 @@ if __name__ == "__main__":
     })
 
 
-    first_follow = FirstFollow(test_grammar)
-    first_k = first_follow.first_k(1)
-    follow_k = first_follow.follow_k(1, first_k)
-    parser = ParsingTableBuilder(test_grammar, first_k, follow_k)
-    table = parser.build()
-    print("Parsing table")
-    print(table)
-    parser = LL1Parser(table, NonTerminal('S'), test_grammar)
+    # first_follow = FirstFollow(test_grammar)
+    # first_k = first_follow.first_k(1)
+    # follow_k = first_follow.follow_k(1, first_k)
+    # parser = ParsingTableBuilder(test_grammar, first_k, follow_k)
+    # table = parser.build()
+    # print("Parsing table")
+    # print(table)
+    # parser = LL1Parser(table, NonTerminal('S'), test_grammar)
     str_to_parse = '(a+a)*a'
-    applied_rules = parser.parse(list(map(lambda x: Terminal(x), str_to_parse)))
+    
+    applied_rules = parse_grammar(test_grammar, str_to_parse)
+    print(applied_rules)
     #applied_rules list of (A, terminal, w) where A -> w
     print('-' * 100)
     # print(first_follow.tuples_to_strings(first_follow.first_k(2)))
