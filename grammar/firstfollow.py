@@ -25,7 +25,6 @@ class FirstFollow:
                             new_rule[i:i+1] = nt_first 
                         queue.append(new_rule)
                     break
-
         return possible_strings
 
     def tuples_to_strings(self, table):
@@ -77,7 +76,7 @@ class FirstFollow:
                         if isinstance(c, NonTerminal):
                             seen_nonterminals_buf.append(c)
                             after = rule[i+1:]
-                            first_of_after = self.concat_k(k, self.get_possible_strings(after, k, first_k), follow[nt])
+                            first_of_after = self.concat_k(k, [ps[:k] for ps in self.get_possible_strings(after, k, first_k)], follow[nt])
                             for s in first_of_after:
                                 if len(s) == 0:
                                     follow[c].add((self.grammar.get_epsilon(),))
