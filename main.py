@@ -5,7 +5,7 @@ from grammar.terminal import Terminal
 
 if __name__ == "__main__":
     test_grammar = Grammar({
-        'S': ['BA'], 
+        'S': ['BA'],
         'A': ['+BA', 'ε'],
         'B': ['DC'],
         'C': ['*DC', 'ε'],
@@ -20,10 +20,11 @@ if __name__ == "__main__":
         'L': ['Z', '(E)'],
         'Z': ['epsilon'],
     })
-    
+
+
     test_grammar_conflict = Grammar({
-        'S' : ['E', 'E a'],
-        'E' : ['b', 'epsilon']
+        'S': ['E', 'E a'],
+        'E': ['b', 'epsilon']
     })
 
     # print(test_grammar.non_terminals)
@@ -32,4 +33,24 @@ if __name__ == "__main__":
     # print(first_follow.tuples_to_strings(first_follow.first_k(2)))
     print(first_follow.tuples_to_strings(first_follow.follow_k(1, first_k)))
     # print(f)
+
     # print(first_follow.concat_k(1, {(Terminal('ε'),)}, {(Terminal('ε'),), (Terminal('+'),)}))
+
+
+    test_grammar_2 = Grammar({
+        'E': ['id + D', '( E * R )', 'ε'],
+        'D': ['V * E', 'L ! E'],
+        'R': ['V ! E'],
+        'V': ['Z', 'num'],
+        'L': ['Z', '( E )'],
+        'Z': ['ε']
+    })
+
+    test_grammar_3 = Grammar(Grammar.read_grammar_from_file("inputs/input_1.txt"))
+    # print(test_grammar.non_terminals)
+
+    print(test_grammar.epsilon_producers)
+    print(test_grammar_2.epsilon_producers)
+    print(test_grammar_3.epsilon_producers)
+      
+
