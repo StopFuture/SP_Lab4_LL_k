@@ -1,0 +1,11 @@
+E -> id + D
+E -> ( E * R )
+E -> epsilon
+D -> V * E
+D -> L ! E
+R -> V ! E
+V -> Z
+V -> num
+L -> Z
+L -> ( E )
+Z -> epsilon
