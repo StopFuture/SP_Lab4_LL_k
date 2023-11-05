@@ -136,6 +136,8 @@ class LL1Parser:
 
 
 def parse_grammar(grammar, string_to_parse):
+    str_to_parse = string_to_parse
+    #print(Grammar.get_regex(str_to_parse))
     first_follow = FirstFollow(grammar)
     first_k = first_follow.first_k(1)
     follow_k = first_follow.follow_k(1, first_k)
@@ -147,8 +149,8 @@ def parse_grammar(grammar, string_to_parse):
     applied_rules = None
     try:
         analyzer = LL1Parser(table, NonTerminal('S'), grammar)
-        str_to_parse = string_to_parse
-        applied_rules = analyzer.parse(list(map(lambda x: Terminal(x), str_to_parse)))
+        tokenized = grammar.get_tnt_string(str_to_parse)
+        applied_rules = analyzer.parse(tokenized)
     except SyntaxError as se:
         print(f"Got an error: {str(se)}")
     except ValueError as ve:
