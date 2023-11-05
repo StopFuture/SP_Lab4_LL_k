@@ -13,7 +13,10 @@ class Grammar:
         self.epsilon_producers = self.find_epsilon_producing_non_terminals()
 
     def get_epsilon(self):
-        return next((t for t in self.terminals if t.is_empty()))
+        eps = next((t for t in self.terminals if t.is_empty()), None)
+        if eps is None:
+            eps = Terminal('ε')
+        return eps
 
     @staticmethod
     def get_regex(text_set):
@@ -106,3 +109,22 @@ class Grammar:
             rules[key] = ['ε' if prod == 'epsilon' else prod for prod in rules[key]]
 
         return rules
+
+    def build_ast(self, rule_sequence):
+        root = ASTNode(self.non_terminals[0])
+        stack = [root]
+        for rule in rule_sequence:
+            nt, _, prod = rule
+            nt = nt[0]
+            curr_node = stack.pop()
+            if curr_node.symbol == nt:
+                for c in prod[::-1]:
+                    if isinstance(c, Terminal):
+                        curr_node.add_child(ASTNode(c))
+                    else:
+                        curr_node.add_child(ASTNode(c))
+                        stack.append(curr_node.children[-1])
+        return root
+
+
+        
