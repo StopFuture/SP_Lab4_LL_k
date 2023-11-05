@@ -13,13 +13,17 @@ class FirstFollow:
         while queue:
             current_rule = queue.popleft()
             if all(isinstance(c, Terminal) for c in current_rule[:k]):
-                possible_strings.append(tuple(current_rule[:k]))
+                if all(nt_c.is_empty() for nt_c in current_rule[:k]):
+                    possible_strings.append((self.grammar.get_epsilon(),))
+                else:
+                    possible_strings.append(tuple(current_rule[:k]))
                 continue
             for i, c in enumerate(current_rule):
                 if isinstance(c, NonTerminal):
                     for nt_first in prev_first_k[c]:
                         new_rule = current_rule.copy()
-                        if all(nt_c.is_empty() for nt_c in nt_first) and len(current_rule) > 1:
+                        is_prev_first_empty = all(nt_c.is_empty() for nt_c in nt_first)
+                        if is_prev_first_empty and len(current_rule) > 1:
                             new_rule[i:i+1] = []
                         else:
                             new_rule[i:i+1] = nt_first 

@@ -15,9 +15,6 @@ class Grammar:
     def get_epsilon(self):
         return next((t for t in self.terminals if t.is_empty()))
 
-    def get_epsilon(self):
-        return next((t for t in self.terminals if t.is_empty()))
-
     @staticmethod
     def get_regex(text_set):
         return f"({'|'.join(sorted([re.escape(t.text) for t in text_set], key=lambda x: len(x), reverse=True))})"
