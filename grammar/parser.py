@@ -147,7 +147,7 @@ def parse_grammar(grammar, string_to_parse):
     applied_rules = None
     try:
         analyzer = LL1Parser(table, NonTerminal('S'), grammar)
-        str_to_parse = '(a+a)*a'
+        str_to_parse = string_to_parse
         applied_rules = analyzer.parse(list(map(lambda x: Terminal(x), str_to_parse)))
     except SyntaxError as se:
         print(f"Got an error: {str(se)}")
