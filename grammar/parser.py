@@ -74,6 +74,7 @@ class LL1Parser:
             
     def parse(self, tokens):
         tokens.append('$')  # Append end-of-input 
+        applied_rules = []
         stack = ['$', self.start_symbol] 
 
         current_token_index = 0
@@ -93,7 +94,9 @@ class LL1Parser:
             elif isinstance(top, NonTerminal): 
                 if isinstance(tokens[current_token_index], str) and tokens[current_token_index] == '$':
                     entry = self.parsing_table.get((str(top), Terminal('ε')))
+                    
                     if entry is not None:
+                        applied_rules.append((str(top), Terminal('ε'), entry))
                         for symbol in reversed(entry):
                             if symbol == 'ε':
                                 continue
@@ -103,6 +106,7 @@ class LL1Parser:
                     
                 entry = self.parsing_table.get((str(top), tokens[current_token_index]))
                 if entry is not None:
+                    applied_rules.append((str(top), tokens[current_token_index], entry))
                     for symbol in reversed(entry):
                         if symbol == 'ε':
                             continue
@@ -122,3 +126,4 @@ class LL1Parser:
 
         if current_token_index < len(tokens) - 1: 
             raise SyntaxError("Input not fully parsed")
+        return applied_rules

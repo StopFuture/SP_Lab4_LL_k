@@ -45,7 +45,8 @@ if __name__ == "__main__":
     print(table)
     parser = LL1Parser(table, NonTerminal('S'), test_grammar)
     str_to_parse = '(a+a)*a'
-    parser.parse(list(map(lambda x: Terminal(x), str_to_parse)))
+    applied_rules = parser.parse(list(map(lambda x: Terminal(x), str_to_parse)))
+    #applied_rules list of (A, terminal, w) where A -> w
     print('-' * 100)
     # print(first_follow.tuples_to_strings(first_follow.first_k(2)))
     #print(first_follow.tuples_to_strings(follow_k))
