@@ -13,10 +13,10 @@ class ParsingTableBuilder:
     def build(self):
         for non_terminal, productions in self.grammar.rules.items():
             for production in productions:
-                print(non_terminal)
+                #print(non_terminal)
                 # For each terminal in FIRST(production)
                 first_production = self._calculate_first_production(production)
-                print(first_production)
+                #print(first_production)
                 
                 for terminal_tuple in first_production:
                     
@@ -50,11 +50,75 @@ class ParsingTableBuilder:
             raise ValueError(f"Grammar is not LL(1): Conflict at ({non_terminal}, {terminal})")
 
     def _handle_epsilon(self, non_terminal, production):
-        print('ok')
+        #print('ok')
         for terminal in self.follow_sets[NonTerminal(non_terminal)]:
-            print(terminal)
+            #print(terminal)
             if (non_terminal, terminal) not in self.parsing_table:
-                print((non_terminal, terminal))
+                #print((non_terminal, terminal))
                 self.parsing_table[(non_terminal, terminal[0])] = production
             else:
                 raise ValueError(f"Grammar is not LL(1): Conflict at ({non_terminal}, {terminal})")
+            
+
+class LL1Parser:
+    def __init__(self, parsing_table, start_symbol, grammar):
+        self.parsing_table = parsing_table
+        self.start_symbol = start_symbol
+        self.grammar = grammar
+        
+    def str_to_symb(self, symb):
+        if Terminal(symb) in self.grammar.terminals:
+            return Terminal(symb)
+        else:
+            return NonTerminal(symb)
+            
+    def parse(self, tokens):
+        tokens.append('$')  # Append end-of-input 
+        stack = ['$', self.start_symbol] 
+
+        current_token_index = 0
+        while len(stack) > 0:
+            top = stack.pop() 
+            print(list(reversed(stack)))
+            print(top)
+            #print(current_token_index)
+            print(tokens[current_token_index:])
+            print('-'*100)
+            
+            if isinstance(top, Terminal): 
+                if top == tokens[current_token_index]:  
+                    current_token_index += 1  
+                else:
+                    raise SyntaxError(f"Unexpected token: Expected {top}, found {tokens[current_token_index]}")
+            elif isinstance(top, NonTerminal): 
+                if isinstance(tokens[current_token_index], str) and tokens[current_token_index] == '$':
+                    entry = self.parsing_table.get((str(top), Terminal('ε')))
+                    if entry is not None:
+                        for symbol in reversed(entry):
+                            if symbol == 'ε':
+                                continue
+                            stack.append(self.str_to_symb(symbol))
+                        continue
+                        
+                    
+                entry = self.parsing_table.get((str(top), tokens[current_token_index]))
+                if entry is not None:
+                    for symbol in reversed(entry):
+                        if symbol == 'ε':
+                            continue
+                        stack.append(self.str_to_symb(symbol))
+                else:
+                    raise SyntaxError(f"No rule to parse: {top} with token {tokens[current_token_index]}")
+            elif top == '$':  # End-of-input marker
+                if tokens[current_token_index] == '$':  # If current token is also end-of-input
+                    print("Parsing successful!")
+                    return  # Parsing is done
+
+                else:
+                    raise SyntaxError("Unexpected end of input")
+
+            else:  
+                raise ValueError(f"Invalid symbol on stack: {top}")
+
+        if current_token_index < len(tokens) - 1: 
+            raise SyntaxError("Input not fully parsed")
