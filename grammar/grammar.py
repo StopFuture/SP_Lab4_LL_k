@@ -15,6 +15,9 @@ class Grammar:
     def get_epsilon(self):
         return next((t for t in self.terminals if t.is_empty()))
 
+    def get_epsilon(self):
+        return next((t for t in self.terminals if t.is_empty()))
+
     @staticmethod
     def get_regex(text_set):
         return f"({'|'.join(sorted([re.escape(t.text) for t in text_set], key=lambda x: len(x), reverse=True))})"
@@ -29,7 +32,7 @@ class Grammar:
             for nt_rule in rules[n.text]:
                 g = nt_rule.split()
                 t = [re.sub(N_regex, ' ', p).split() for p in g]
-                terminals |= set(list(itertools.chain.from_iterable(t)))
+                terminals |= set(itertools.chain.from_iterable(t))
         self.terminals = [Terminal(term) for term in terminals]
 
         print(self.terminals, self.non_terminals)

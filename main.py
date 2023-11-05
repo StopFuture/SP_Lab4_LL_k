@@ -21,6 +21,7 @@ if __name__ == "__main__":
         'Z': ['epsilon'],
     })
 
+
     test_grammar_conflict = Grammar({
         'S': ['E', 'E a'],
         'E': ['b', 'epsilon']
@@ -32,6 +33,7 @@ if __name__ == "__main__":
     # print(first_follow.tuples_to_strings(first_follow.first_k(2)))
     print(first_follow.tuples_to_strings(first_follow.follow_k(1, first_k)))
     # print(f)
+
     # print(first_follow.concat_k(1, {(Terminal('ε'),)}, {(Terminal('ε'),), (Terminal('+'),)}))
 
 
@@ -50,3 +52,5 @@ if __name__ == "__main__":
     print(test_grammar.epsilon_producers)
     print(test_grammar_2.epsilon_producers)
     print(test_grammar_3.epsilon_producers)
+      
+
