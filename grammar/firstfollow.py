@@ -13,7 +13,6 @@ class FirstFollow:
         while queue:
             current_rule = queue.popleft()
             if all(isinstance(c, Terminal) for c in current_rule[:k]):
-                # print(f"{current_rule=}")
                 possible_strings.append(tuple(current_rule[:k]))
                 continue
             for i, c in enumerate(current_rule):
@@ -49,13 +48,9 @@ class FirstFollow:
                 prev_first[key] = value.copy()
 
             for n in self.grammar.non_terminals:
-                # print(f"{n=}")
                 for rule in n.rules:
                     possible_strings = self.get_possible_strings(rule, k, first)
-                    # print(f"{possible_strings=}")
                     first[n] |= set(possible_strings)
-                # print(f"{first=}")
-                # print(f"{prev_first=}")
 
         return first
     
@@ -83,10 +78,6 @@ class FirstFollow:
                             seen_nonterminals_buf.append(c)
                             after = rule[i+1:]
                             first_of_after = self.concat_k(k, self.get_possible_strings(after, k, first_k), follow[nt])
-                            print(f"{nt=}")
-                            print(f"{c=}")
-                            print(f"{rule=}")
-                            print(f"{first_of_after=}")
                             for s in first_of_after:
                                 if len(s) == 0:
                                     follow[c].add((self.grammar.get_epsilon(),))
