@@ -2,7 +2,7 @@ from grammar.non_terminal import NonTerminal
 from grammar.terminal import Terminal
 import re
 import itertools
-
+from grammar.ast import ASTNode
 
 class Grammar:
     def __init__(self, rules):
@@ -37,6 +37,7 @@ class Grammar:
         T_regex = Grammar.get_regex(self.terminals)
 
         regex = f"{N_regex}|{T_regex}"
+        self.regex = regex
 
         # get rules
         for n in self.non_terminals:
@@ -47,6 +48,15 @@ class Grammar:
                         n.rules[-1].append(next((nt for nt in self.non_terminals if nt.text == m.group(1))))
                     elif m.group(2):
                         n.rules[-1].append(next((t for t in self.terminals if t.text == m.group(2))))
+    
+    def get_tnt_string(self, text):
+        result = []
+        for m in re.finditer(self.regex, text):
+            if m.group(1):
+                result.append(next((nt for nt in self.non_terminals if nt.text == m.group(1))))
+            elif m.group(2):
+                result.append(next((t for t in self.terminals if t.text == m.group(2))))
+        return result
 
     def find_epsilon_producing_non_terminals(self):
         epsilon_producers = set()
