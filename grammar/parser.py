@@ -116,7 +116,7 @@ class LL1Parser:
             elif top == '$':  # End-of-input marker
                 if tokens[current_token_index] == '$':  # If current token is also end-of-input
                     print("Parsing successful!")
-                    return  # Parsing is done
+                    #return  # Parsing is done
 
                 else:
                     raise SyntaxError("Unexpected end of input")
