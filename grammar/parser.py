@@ -126,4 +126,10 @@ class LL1Parser:
 
         if current_token_index < len(tokens) - 1: 
             raise SyntaxError("Input not fully parsed")
-        return applied_rules
+        
+        ternimalized = []
+        #print(applied_rules)
+        for rule in applied_rules:
+            func = lambda x: list(map(self.str_to_symb, x))
+            ternimalized.append((func(rule[0]), rule[1], func(rule[2])))
+        return ternimalized
