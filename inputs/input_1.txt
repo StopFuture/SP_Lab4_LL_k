@@ -4,8 +4,11 @@ E -> epsilon
 D -> V * E
 D -> L ! E
 R -> V ! E
+R -> L * E
 V -> Z
 V -> num
 L -> Z
 L -> ( E )
 Z -> epsilon
+
+id + !

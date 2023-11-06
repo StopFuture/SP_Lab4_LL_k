@@ -14,56 +14,35 @@ class ParsingTableBuilder:
     def build(self):
         for non_terminal, productions in self.grammar.rules.items():
             for production in productions:
-                #print('-'*20)
-                #print(non_terminal)
                 # For each terminal in FIRST(production)
-                #print("production", production)
                 first_production = self._calculate_first_production(production)
-                #print(first_production)
 
                 for terminal_tuple in first_production:
-                    #print(terminal_tuple)
                     terminal = terminal_tuple[0]
-                    # print(first_production)
-                    # print('print("SYKA,", terminal, terminal_tuple)')
-                    # print("SYKA,", terminal, terminal_tuple)
                     if terminal != Terminal('ε'):
                         self._add_to_parsing_table(non_terminal, terminal, production)
-                
-                #print('-'*20)
+
                 # If ε is in FIRST(production), for each terminal in FOLLOW(non_terminal)
                 if (Terminal('ε'),) in first_production:
-                    #print('okfdokodkfjdokf')
-                    self._handle_epsilon(non_terminal, production)
+                    self._handle_epsilon(non_terminal, non_terminal, production)
 
         return self.parsing_table
 
     def _calculate_first_production(self, production):
         first_production = set()
-        #print('fuck')
+
         production = [c.text for c in Grammar.get_tnt_string(self.grammar, production)]
-        #print(production)
 
         for t_symbol in production:
-            #print('suka')
-            #print(t_symbol)
             symbol = Terminal(t_symbol) if Terminal(t_symbol) in self.grammar.terminals else NonTerminal(t_symbol)
-            # print("symbol", symbol)
-            #print(symbol, type(symbol))
-            #print(symbol in self.first_sets)
-            #if symbol in self.first_sets:
-            #    print('FICKCKCK')
-            #    print(self.first_sets[symbol])
             first_symbol = self.first_sets[symbol] if symbol in self.first_sets else {(symbol,)}
-            #print(first_symbol)
-            # print("first_symbol", first_symbol)
-            if (Terminal('ε'), ) not in first_symbol:
+
+            if (Terminal('ε'),) not in first_symbol:
                 first_production.update(first_symbol)
-            if (Terminal('ε'), )  not in first_symbol:
+            if (Terminal('ε'),) not in first_symbol:
                 break
         else:
-            first_production.add((Terminal('ε'), ))
-        #print('-----____-----')
+            first_production.add((Terminal('ε'),))
         return first_production
 
     def _add_to_parsing_table(self, non_terminal, terminal, production):
@@ -73,16 +52,12 @@ class ParsingTableBuilder:
         else:
             raise ValueError(f"Grammar is not LL(1): Conflict at ({non_terminal}, {terminal})")
 
-    def _handle_epsilon(self, non_terminal, production):
+    def _handle_epsilon(self, non_terminal, nt, production):
         production = [c.text for c in Grammar.get_tnt_string(self.grammar, production)]
-        
-        #print(production)
+
         # print('ok')
-        #print(self.follow_sets[NonTerminal(non_terminal)])
         for terminal in self.follow_sets[NonTerminal(non_terminal)]:
-            # print(terminal)
-            if (non_terminal, terminal) not in self.parsing_table:
-                # print((non_terminal, terminal))
+            if (non_terminal, terminal[0]) not in self.parsing_table:
                 self.parsing_table[(non_terminal, terminal[0])] = production
             else:
                 raise ValueError(f"Grammar is not LL(1): Conflict at ({non_terminal}, {terminal})")

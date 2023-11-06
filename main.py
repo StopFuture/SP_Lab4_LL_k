@@ -19,15 +19,18 @@ def parse_and_display(grammar, str_to_parse):
     print(f'Recursive Descent Parsing "{str_to_parse}": {recursive_parser.parse(str_to_parse)}')
     sequence = parse_grammar(grammar, str_to_parse)
     print('-' * 100)
-    print("Applied Rules:")
-    for i, rule in enumerate(sequence):
-        print(f"Rule № {i + 1}: {rule}")
+    if sequence:
+        print("Applied Rules:")
+        for i, rule in enumerate(sequence):
+            print(f"{rule[0]} -> {rule[2]}")
 
-    print('-' * 100)
-    print("Abstract Syntax Tree:")
-    root = test_grammar.build_ast(sequence)
-    ASTNode.print_ast(root)
-    print('-' * 100)
+        print('-' * 100)
+        print("Abstract Syntax Tree:")
+        root = grammar.build_ast(sequence)
+        ASTNode.print_ast(root)
+        print('-' * 100)
+    else:
+        print("AST cannot be built")
 
 
 if __name__ == "__main__":
@@ -45,7 +48,10 @@ if __name__ == "__main__":
 
     print("TEST 2: \n")
     test_grammar_1 = Grammar(Grammar.read_grammar_from_file("inputs/input_1.txt"))
-    str_to_parse_1 = 'id + !'
+
+    str_to_parse_1 = 'id + ! id + !'
+    str_to_parse_2 = '( * ! !)'
+
     parse_and_display(test_grammar_1, str_to_parse_1)
 
 
